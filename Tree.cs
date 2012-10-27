@@ -23,8 +23,8 @@ namespace gen{
 
         public Tree(Tree t){
             Copy(t);
-            if(Height() > 1)
-            this._type = t._type;
+            if (Height() > 1)
+                this._type = t._type;
         }
 
         public static void Crossover(Tree t1, Tree t2){
@@ -106,18 +106,19 @@ namespace gen{
         private void Copy(Tree t){
             _type = t._type;
             _value = t._value;
-            if (t._left != null) {
+            if (t._left != null){
                 _left = new Tree(t._left);
-            } else {
+            }
+            else{
                 _left = null;
             }
-            if(t._right != null){
+            if (t._right != null){
                 _right = new Tree(t._right);
-            } else {
+            }
+            else{
                 _left = null;
             }
             this._type = _type;
-
         }
 
         private static void Swap(Tree t1, Tree t2){
@@ -189,7 +190,7 @@ namespace gen{
             return new Tree(INDEX, x, null, null);
         }
 
-        new public string ToString(){
+        public new string ToString(){
             return " TYPE: " + _type + " HEIGHT " + Height();
         }
     }

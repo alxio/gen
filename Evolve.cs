@@ -73,7 +73,7 @@ namespace gen{
             parent = parent*parent;
             parent /= 100;
             int result = (int) parent;
-            if(result == secondParent){
+            if (result == secondParent){
                 result = (result + 1)%_survivedSize;
             }
             return result;
@@ -83,14 +83,15 @@ namespace gen{
             for (int i = _survivedSize; i + 1 < _popSize; i += 2){
                 int p1 = randomParentId(INF);
                 int p2 = randomParentId(p1);
-                System.Console.Out.WriteLine("CROSSOVER " + p1 + _population[p1].ToString() + " with "+ p2 + _population[p2].ToString());
+                System.Console.Out.WriteLine("CROSSOVER " + p1 + _population[p1].ToString() + " with " + p2 +
+                                             _population[p2].ToString());
                 _population[i] = new Tree(_population[p1]);
                 _population[i + 1] = new Tree(_population[p2]);
                 Tree.Crossover(_population[i], _population[i + 1]);
             }
             for (int i = _survivedSize/2; i < _popSize; i++){
                 if (Program.RandomGenerator.Next()%100 < _mutationChance){
-                    System.Console.Out.WriteLine("MUTATING "+i+_population[i]);
+                    System.Console.Out.WriteLine("MUTATING " + i + _population[i]);
                     _population[i].Mutate();
                 }
             }
