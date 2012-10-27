@@ -9,6 +9,23 @@ namespace gen{
         public const int NETWORK_BREADTH = Program.DATA_SIZE*2;
         private Neuron[][] _neurons = new Neuron[NETWORK_DEPTH][];
 
+        public void Mutate(){
+            
+        }
+
+        public static void Crossover(Network s1, Network s2){
+            
+        }
+
+        public Network(Network n){
+            for(int i=0;i<_neurons.Length;i++){
+                _neurons[i] =  new Neuron[NETWORK_BREADTH];
+                for(int j=0;j<_neurons[i].Length;j++){
+                    _neurons[i][j] = new Neuron(n._neurons[i][j]);
+                }
+            }
+        }
+
         public Network(){
             for (int i = 0; i < NETWORK_DEPTH; i++){
                 _neurons[i] = new Neuron[NETWORK_BREADTH];

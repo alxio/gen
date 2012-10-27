@@ -43,7 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Neural.cs" />
+    <Compile Include="Neuron.cs" />
+    <Compile Include="Network.cs" />
     <Compile Include="Evolve.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
