@@ -7,6 +7,7 @@ namespace gen{
         private readonly int _height;
         private readonly int _mutationChance;
         private readonly int _popSize;
+        private readonly int _freshSize;
         private readonly SortedList<float, Network> _rated = new SortedList<float, Network>();
         private readonly int _survivedSize;
         private float _best = INF;
@@ -15,10 +16,10 @@ namespace gen{
         private Network[] _population;
 
         public Evolve(){
-            _popSize = 200;
-            _height = 4;
-            _survivedSize = 20;
-            _mutationChance = 5;
+            _popSize = 2000;
+            _freshSize = 500;
+            _survivedSize = 500;
+            _mutationChance = 50;
             InitPopulation();
         }
 
@@ -47,18 +48,33 @@ namespace gen{
             }
         }
 
+        private bool AddToRated(float rating, Network n){
+            try{
+                _rated.Add(rating, n);
+                return true;
+            }
+            catch (Exception e){
+                return false;
+            }
+        }
+
         private void Rate(){
             _rated.Clear();
             for (int i = 0; i < _popSize; i++){
                 float rating = RateNetwork(_population[i]);
-                if (rating < _best) _best = rating;
-                _rated.Add(rating, _population[i]);
+                if (rating < _best){
+                    if(_best - rating > 1){
+                        System.Console.Out.WriteLine(rating);
+                    }
+                    _best = rating;
+                }
+                AddToRated(rating, _population[i]);
             }
         }
 
         private float RateNetwork(Network network){
             float rating = 0;
-            foreach (var test in _tests) {
+            foreach (var test in _tests){
                 float eval = network.Calculate(test) - test[0];
                 rating += Math.Abs(eval);
             }
@@ -73,11 +89,13 @@ namespace gen{
             }
         }
 
-        private int RandomParentId(int secondParent){
+        private int RandomParentId(int secondParent, bool best){
             double parent = Program.RandomGenerator.NextDouble();
-            parent *= _survivedSize;
-            parent = parent*parent;
-            parent /= 100;
+            if (best) {
+                parent *= _survivedSize;
+            } else{
+                parent *= (_population.Length - 1);
+            }
             int result = (int) parent;
             if (result == secondParent){
                 result = (result + 1)%_survivedSize;
@@ -86,16 +104,18 @@ namespace gen{
         }
 
         private void Breed(){
-            for (int i = _survivedSize; i + 1 < _popSize; i += 2){
-                int p1 = RandomParentId(INF);
-                int p2 = RandomParentId(p1);
+            for (int i = _survivedSize; i + 1 < _popSize - _freshSize; i += 2){
+                int p1 = RandomParentId(INF,true);
+                int p2 = RandomParentId(p1,false);
                 _population[i] = new Network(_population[p1]);
                 _population[i + 1] = new Network(_population[p2]);
                 Network.Crossover(_population[i], _population[i + 1]);
             }
-            for (int i = _survivedSize/2; i < _popSize; i++){
+            for (int i = _popSize - _freshSize; i < _popSize; i++){
+                _population[i] = new Network();
+            }
+            for (int i = 0; i < _popSize - _freshSize; i++){
                 if (Program.RandomGenerator.Next()%100 < _mutationChance){
-                    //System.Console.Out.WriteLine("MUTATING " + i + _population[i]);
                     _population[i].Mutate();
                 }
             }
